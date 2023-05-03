@@ -18,6 +18,8 @@ import { TaskFormComponent } from './task-form/task-form.component';
 import { FooterComponent } from './footer/footer.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { TaskCreateComponent } from './task-create/task-create.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { TaskCreateComponent } from './task-create/task-create.component';
     TaskFormComponent,
     FooterComponent,
     UserListComponent,
-    TaskCreateComponent
+    TaskCreateComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

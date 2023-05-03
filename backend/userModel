@@ -3,7 +3,8 @@ const taskModel = require('./taskModel')
 
 userSchema = mongoose.Schema({
   name: {type:String, required: true },
-  tasks:{type:[taskModel], require: true}
+  userID: {type:String, required: true},
+  tasks:{type:[taskModel], required: true}
 })
 
 module.exports = mongoose.model('User', userSchema)
