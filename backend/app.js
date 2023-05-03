@@ -1,13 +1,14 @@
 const express = require('express')
 const app = express()
 require('dotenv').config()
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const firebase = require('firebase/app');
-const firebaseAuth = require('firebase/auth')
+const firebaseAuth = require('firebase/auth');
+const { v4: uuidv4 } = require('uuid');
 
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-// const taskModel = require('./taskModel')
+const Task = require('./taskModel')
 const User = require('./userModel');
 
 
@@ -35,33 +36,87 @@ mongoose.connect(process.env.DB)
 firebase.initializeApp(firebaseConfig);
 const auth = firebaseAuth.getAuth();
 
-function signUp(name,email, password){
-    firebaseAuth.createUserWithEmailAndPassword(auth, email, password)
-  .then( async (userCredential) => {
-    // Signed in 
-    const newUser = new User({
-        name: name,
-        userID: userCredential.user.uid,
-        tasks: []
-      });
-      try {
-        await newUser.save();
-        console.log('MongoDB user created:', newUser);
-      } catch (error) {
-        console.error('Error creating MongoDB user:', error);
+function signUp(name, email, password) {
+    return new Promise(async (resolve, reject) => {
+      firebaseAuth.createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const newUser = new User({
+            name: name,
+            userID: userCredential.user.uid,
+            tasks: []
+          });
+          try {
+            await newUser.save();
+            console.log('MongoDB user created', newUser._id);
+            resolve(newUser);
+          } catch (error) {
+            console.error('Error creating MongoDB user:', error);
+            reject(error);
+          }
+  
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+          reject(error);
+        });
+    });
+  }
+  
+
+const addTaskToUser = async (userId, task) => {
+    try {
+      const user = await User.findOne({ _id: userId });
+  
+      if (!user) {
+        console.log('User not found');
+        return;
       }
-      
+      //adds the task
+      user.tasks.set(task._id, task);
+  
+      await user.save();
+      console.log('Task added successfully');
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
+  };
+
+
+
+
+signUp('test', 'test@example.com', 'password123')
+  .then(newUser => {
+    console.log(newUser._id)
+    addTaskToUser(newUser._id, newTask)
+    addTaskToUser(newUser._id, newTask1)
+    newUser.save()
   })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode, errorMessage)
+  .catch(error => {
+    console.error('Error in signUp:', error);
   });
-}
 
 
 
-//signUp("Chase2", "test1@test.com", "password")
+
+  const newTask = new Task({
+    title: 'Sample Task',
+    description: 'This is a sample task.',
+    date: Date.now
+  });
+
+  const newTask1 = new Task({
+    title: 'Sample Task 2',
+    description: 'This is also a sample task.',
+    date: Date.now
+  });
+
+//   addTaskToUser(user._id, newTask)
+//   addTaskToUser(user._id, newTask1)
+
+
+
 
   
 

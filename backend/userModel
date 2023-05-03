@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
-const taskModel = require('./taskModel')
+const task = require('./taskModel')
 
 userSchema = mongoose.Schema({
   name: {type:String, required: true },
   userID: {type:String, required: true},
-  tasks:{type:[String], required: true}
+  tasks:{type: Map, of: task.obj, default: {}}
 })
 
 module.exports = mongoose.model('User', userSchema)
