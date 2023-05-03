@@ -12,10 +12,20 @@ import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { TaskListComponent } from './task-list/task-list.component';
+import { TaskFormComponent } from './task-form/task-form.component';
+import { FooterComponent } from './footer/footer.component';
+import { UserListComponent } from './user-list/user-list.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent,
+    TaskListComponent,
+    TaskFormComponent,
+    FooterComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,
