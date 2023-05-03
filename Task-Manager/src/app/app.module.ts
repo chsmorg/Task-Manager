@@ -17,6 +17,7 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { TaskFormComponent } from './task-form/task-form.component';
 import { FooterComponent } from './footer/footer.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { TaskCreateComponent } from './task-create/task-create.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { UserListComponent } from './user-list/user-list.component';
     TaskListComponent,
     TaskFormComponent,
     FooterComponent,
-    UserListComponent
+    UserListComponent,
+    TaskCreateComponent
   ],
   imports: [
     BrowserModule,
