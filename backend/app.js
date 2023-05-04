@@ -75,17 +75,17 @@ app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
     deleteTask(userId,taskId,res)
 }
 
-app.post('/api/users/:userId/tasks'),(req,res,next)=>{
-    console.log(req.body,req.params)
+app.post('/api/users/:userId/tasks', (req, res, next) => {
+    console.log(req.body, req.params);
     const { userId } = req.params;
     const task = new Task({
-      title: req.body.title,
-      description: req.body.description,
-      date: new Date().toString
-    })
-    addNewTask(userId,task,res)
+        title: req.body.title,
+        description: req.body.description,
+        date: new Date()
+    });
+    addNewTask(userId, task, res);
+});
 
-}
 
 
 
@@ -166,18 +166,18 @@ function Register(name, email, password, res) {
   }
 
   function findUserById(userId) {
-    return new Promise((resolve, reject) => {
-      User.findOne({ _id: userId }, (error, user) => {
-        if (error) {
-          reject(error);
-        } else if (!user) {
-          reject(new Error('User not found'));
-        } else {
-          resolve(user);
+    return User.findOne({ _id: userId })
+      .then((user) => {
+        if (!user) {
+          throw new Error('User not found');
         }
+        return user;
+      })
+      .catch((error) => {
+        throw error;
       });
-    });
   }
+  
 
 
   const getAllTasks = async (userID,res) => {
@@ -200,11 +200,12 @@ function Register(name, email, password, res) {
   const addNewTask = async (userID, task, res) => {
     findUserById(userID).then(async user => {
         user.tasks.set(task._id, task);
-        await user.save().then(task => {
+        const taskID = task._id;
+        await user.save().then(() => {
             res.status(200).json({
                 status: true,
                 message:"Task Added successfully",
-                taskID: task._id
+                task: task
             })
         });
         

@@ -5,6 +5,7 @@ taskSchema = mongoose.Schema({
   title: {type:String, required: true },
   description:{type:String, require: true},
   date: {type:Date},
+  priority: {type: Number, defualt: 1},
   status:{type:Boolean, default: false}
 })
 
