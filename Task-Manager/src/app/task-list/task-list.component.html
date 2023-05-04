@@ -1,1 +1,21 @@
-<p>task-list works!</p>
+<!-- task-list.component.html -->
+<div class="task-list">
+    <div class="filters">
+        <div class="filter-buttons">
+            <button (click)="toggleFilter('completed')">Completed</button>
+            <button (click)="toggleFilter('priority')">Priority</button>
+            <button (click)="toggleFilter('date')">Date</button>
+        </div>  
+    </div>
+  
+    <div class="tasks">
+      <div *ngFor="let task of filteredTasks" class="task">
+        <h3>{{ task.title }}</h3>
+        <p>{{ task.description }}</p>
+        <p>Priority: {{ task.priority }}</p>
+        <p>Date: {{ task.date }}</p>
+        <p>Completed: {{ task.completed ? 'Yes' : 'No' }}</p>
+      </div>
+    </div>
+  </div>
+  

@@ -65,10 +65,11 @@ app.post('/api/register', (req, res) => {
     Register(name,email,password,res)
 })
 
-app.get('/api/users/:userId/tasks'), (req,res) => {
-    const {userID} = req.params;
-    getAllTasks(userID,res)
-}
+app.get('/api/users/:userId/tasks', (req,res) => {
+    console.log(req.body, req.params);
+    const {userId} = req.params;
+    getAllTasks(userId,res)
+});
 
 app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
     const { userId, taskId } = req.params;
@@ -170,7 +171,9 @@ function Register(name, email, password, res) {
     return User.findOne({ _id: userId })
       .then((user) => {
         if (!user) {
+            console.log("no users")
           throw new Error('User not found');
+          
         }
         return user;
       })
@@ -187,7 +190,7 @@ function Register(name, email, password, res) {
         res.status(200).json({
             status: true,
             message:"tasks fetched successfully ",
-            posts: tasks
+            tasks: tasks
           });
     }).catch(error => {
         const errorMessage = error.message;
