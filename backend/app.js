@@ -45,7 +45,6 @@ app.use((req, res, next)=>{
     res.setHeader("Access-Control-Allow-Methods",
     "GET, POST, PATCH, DELETE, OPTIONS"
     );
-    console.log('Middleware');
     next();
   })
 
@@ -53,20 +52,10 @@ app.use((req, res, next)=>{
     next();
   })
 
-  app.post("/api/newTask/:id",(req,res,next)=>{
-    const task = new Task({
-      title: req.body.title,
-      description: req.body.description,
-      date: Date.now
-    })
-        addTask(req.params.id, task, res)
-    })
 
 app.post('/api/login',(req, res) => {
    const { email, password } = req.body;
    console.log(req.body)
-//    const email = req.body.email;
-//    const password = req.body.password;
     login(email,password,res)
 });
 
@@ -74,6 +63,28 @@ app.post('/api/register', (req, res) => {
     const {name, email, password} = req.body
     Register(name,email,password,res)
 })
+
+app.get('/api/users/:userId/tasks'), (req,res) => {
+    const {userID} = req.params;
+    getAllTasks(userID,res)
+}
+
+app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
+    const { userId, taskId } = req.params;
+    deleteTask(userId,taskId,res)
+}
+
+app.post('/api/users/:userId/tasks'),(req,res,next)=>{
+    const { userId } = req.params;
+    const task = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      date: Date.now
+    })
+    addNewTask(userId,task,res)
+
+}
+
 
 
 
@@ -87,7 +98,7 @@ function login(email, password, res){
                 res.status(401).json({
                     status: false,
                     message: 'Login unsuccessful: User not found',
-                    });
+                });
                 return;
             }
             res.status(201).json({
@@ -95,14 +106,14 @@ function login(email, password, res){
                 message:'Login successful',
                 userID: user._id,
                 name: user.name
-                });
+             });
 
         }
         catch{
             res.status(401).json({
                 status: false,
                 message: 'Login unsuccessful: User not found',
-                });
+            });
         }
     })
     .catch((error) => {
@@ -152,81 +163,91 @@ function Register(name, email, password, res) {
     });
   }
 
+  function findUserById(userId) {
+    return new Promise((resolve, reject) => {
+      User.findOne({ _id: userId }, (error, user) => {
+        if (error) {
+          console.error('Error while finding user:', error);
+          reject(error);
+        } else if (!user) {
+          console.log('User not found');
+          reject(new Error('User not found'));
+        } else {
+          resolve(user);
+        }
+      });
+    });
+  }
 
+
+  const getAllTasks = async (userID,res) => {
+    findUserById(userID).then(user => {
+        const tasks = Array.from(user.tasks.values());
+        res.status(200).json({
+            status: true,
+            message:"tasks fetched successfully ",
+            posts: tasks
+          });
+    }).catch(error => {
+        const errorMessage = error.message;
+          res.status(500).json({
+            status: false,
+            message: errorMessage
+        });
+    })
+  }
+
+  const addNewTask = async (userID, task, res) => {
+    findUserById(userID).then(async user => {
+        user.tasks.set(task._id, task);
+        await user.save().then(task => {
+            res.status(200).json({
+                status: true,
+                message:"Task Added successfully",
+                taskID: task._id
+            })
+        });
+        
+    }).catch(error => {
+        const errorMessage = error.message;
+          res.status(500).json({
+            status: false,
+            message: errorMessage
+        });
+    });
+  }
   
-  const addTask = async (userId, task, res) => {
-    try {
-      const user = await User.findOne({ _id: userId });
-  
-      if (!user) {
-        console.log('User not found');
-        return;
-      }
-      //adds the task
-      user.tasks.set(task._id, task);
-  
-      await user.save().then(task=> {
-        res.status(201).json({
-          message:'task added successful',
-          taskId: task._id
+
+  const deleteTask = async (userID, taskID, res) => {
+    findUserById(userID).then( async user => {
+        if (user.tasks.has(taskId)) {
+            user.tasks.delete(taskId);
+            await user.save().then(_ => {
+                res.status(200).json({
+                    status: true,
+                    message:"Task deleted successfully"
+                })
+            });
+        }else{
+            res.status(404).json({
+                status: false,
+                message:"Task does not exist"
+            })
+        }
+         
+      })
+      .catch(error => {
+        const errorMessage = error.message;
+          res.status(500).json({
+            status: false,
+            message: errorMessage
         });
       });
-      console.log('Task added successfully');
-    } catch (error) {
-      console.error('Error adding task:', error);
-    }
-  };
-
-
-const addTaskToUser = async (userId, task) => {
-    try {
-      const user = await User.findOne({ _id: userId });
-  
-      if (!user) {
-        console.log('User not found');
-        return;
-      }
-      //adds the task
-      user.tasks.set(task._id, task);
-  
-      await user.save();
-      console.log('Task added successfully');
-    } catch (error) {
-      console.error('Error adding task:', error);
-    }
-  };
-
-
-
-
-// signUp('test', 'test@example.com', 'password123')
-//   .then(newUser => {
-//     console.log(newUser._id)
-//     addTaskToUser(newUser._id, newTask)
-//     addTaskToUser(newUser._id, newTask1)
-//   })
-//   .catch(error => {
-//     console.error('Error in signUp:', error);
-//   });
-
-
-
-
-  const newTask = new Task({
-    title: 'Sample Task',
-    description: 'This is a sample task.',
-    date: Date.now
-  });
-
-  const newTask1 = new Task({
-    title: 'Sample Task 2',
-    description: 'This is also a sample task.',
-    date: Date.now
-  });
+  }
 
 module.exports = app;
-//   addTaskToUser(user._id, newTask)
-//   addTaskToUser(user._id, newTask1)
+
+
 
 
 
