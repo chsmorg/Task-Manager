@@ -38,3 +38,6 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
+.loginLink{
+  padding-left: 20%;
+}

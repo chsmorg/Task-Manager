@@ -38,3 +38,7 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
+
+.registerLink{
+  padding-left: 20%;
+}
