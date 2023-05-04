@@ -36,8 +36,87 @@ mongoose.connect(process.env.DB)
 firebase.initializeApp(firebaseConfig);
 const auth = firebaseAuth.getAuth();
 
-function signUp(name, email, password) {
-    return new Promise(async (resolve, reject) => {
+app.use((req, res, next)=>{
+    res.setHeader("Access-Control-Allow-Origin","*");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.setHeader("Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS"
+    );
+    console.log('Middleware');
+    next();
+  })
+
+  app.use((req, res, next)=>{
+    next();
+  })
+
+  app.post("/api/newTask/:id",(req,res,next)=>{
+    const task = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      date: Date.now
+    })
+        addTask(req.params.id, task, res)
+    })
+
+app.post('/api/login',(req, res) => {
+   const { email, password } = req.body;
+   console.log(req.body)
+//    const email = req.body.email;
+//    const password = req.body.password;
+    login(email,password,res)
+});
+
+app.post('/api/register', (req, res) => {
+    const {name, email, password} = req.body
+    Register(name,email,password,res)
+})
+
+
+
+function login(email, password, res){
+    console.log(email,password)
+    firebaseAuth.signInWithEmailAndPassword(auth, email, password)
+    .then( async (userCredential) => {
+        try {
+            const user = await User.findOne({ userID:  userCredential.user.uid });
+            if (!user) {
+                res.status(401).json({
+                    status: false,
+                    message: 'Login unsuccessful: User not found',
+                    });
+                return;
+            }
+            res.status(201).json({
+                status: true,
+                message:'Login successful',
+                userID: user._id,
+                name: user.name
+                });
+
+        }
+        catch{
+            res.status(401).json({
+                status: false,
+                message: 'Login unsuccessful: User not found',
+                });
+        }
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        res.status(500).json({
+            status: false,
+            message: errorMessage
+            });
+        });
+}
+
+function Register(name, email, password, res) {
       firebaseAuth.createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const newUser = new User({
@@ -48,22 +127,56 @@ function signUp(name, email, password) {
           try {
             await newUser.save();
             console.log('MongoDB user created', newUser._id);
-            resolve(newUser);
+
+            res.status(201).json({
+                status: true,
+                message:'Register successful',
+                userID: newUser._id,
+                name: newUser.name
+                });
           } catch (error) {
-            console.error('Error creating MongoDB user:', error);
-            reject(error);
+            res.status(500).json({
+                status: false,
+                message: error.message
+            });
           }
   
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-          reject(error);
+          res.status(500).json({
+            status: false,
+            message: errorMessage
         });
     });
   }
+
+
   
+  const addTask = async (userId, task, res) => {
+    try {
+      const user = await User.findOne({ _id: userId });
+  
+      if (!user) {
+        console.log('User not found');
+        return;
+      }
+      //adds the task
+      user.tasks.set(task._id, task);
+  
+      await user.save().then(task=> {
+        res.status(201).json({
+          message:'task added successful',
+          taskId: task._id
+        });
+      });
+      console.log('Task added successfully');
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
+  };
+
 
 const addTaskToUser = async (userId, task) => {
     try {
@@ -86,16 +199,15 @@ const addTaskToUser = async (userId, task) => {
 
 
 
-signUp('test', 'test@example.com', 'password123')
-  .then(newUser => {
-    console.log(newUser._id)
-    addTaskToUser(newUser._id, newTask)
-    addTaskToUser(newUser._id, newTask1)
-    newUser.save()
-  })
-  .catch(error => {
-    console.error('Error in signUp:', error);
-  });
+// signUp('test', 'test@example.com', 'password123')
+//   .then(newUser => {
+//     console.log(newUser._id)
+//     addTaskToUser(newUser._id, newTask)
+//     addTaskToUser(newUser._id, newTask1)
+//   })
+//   .catch(error => {
+//     console.error('Error in signUp:', error);
+//   });
 
 
 
@@ -112,6 +224,7 @@ signUp('test', 'test@example.com', 'password123')
     date: Date.now
   });
 
+module.exports = app;
 //   addTaskToUser(user._id, newTask)
 //   addTaskToUser(user._id, newTask1)
 
