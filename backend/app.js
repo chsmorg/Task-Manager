@@ -74,12 +74,13 @@ app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
     deleteTask(userId,taskId,res)
 }
 
+'/api/users/'+userid+'/tasks'
 app.post('/api/users/:userId/tasks'),(req,res,next)=>{
     const { userId } = req.params;
     const task = new Task({
       title: req.body.title,
       description: req.body.description,
-      date: Date.now
+      date: new Date().toString
     })
     addNewTask(userId,task,res)
 
@@ -89,7 +90,7 @@ app.post('/api/users/:userId/tasks'),(req,res,next)=>{
 
 
 function login(email, password, res){
-    console.log(email,password)
+    console.log(email,password, new Date())
     firebaseAuth.signInWithEmailAndPassword(auth, email, password)
     .then( async (userCredential) => {
         try {
@@ -167,10 +168,8 @@ function Register(name, email, password, res) {
     return new Promise((resolve, reject) => {
       User.findOne({ _id: userId }, (error, user) => {
         if (error) {
-          console.error('Error while finding user:', error);
           reject(error);
         } else if (!user) {
-          console.log('User not found');
           reject(new Error('User not found'));
         } else {
           resolve(user);
