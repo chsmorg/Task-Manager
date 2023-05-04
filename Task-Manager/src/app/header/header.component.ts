@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-
+  constructor(private router: Router) { }
+  goToCreateTask() {
+    this.router.navigate(['/task-create']);
+  }
+  goToListTasks() {
+    this.router.navigate(['/task-list']);
+  }
+ logout(){
+  
+ }
 }
