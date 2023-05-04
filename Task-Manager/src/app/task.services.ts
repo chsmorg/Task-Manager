@@ -6,7 +6,7 @@ import {User} from './user.model'
 import {Task} from './task.model'
 import { DatabaseTask } from './database-task.model';
 import {map} from 'rxjs/operators'
-import { Router } from '@angular/router';
+import { Data, Router } from '@angular/router';
 
 
 @Injectable({providedIn: 'root'})
@@ -36,6 +36,54 @@ export class TaskService {
     }
   }
 
+  getTasks(){
+    this.http.get<{message: string, tasks: any}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks")
+    .pipe(map((taskData)=>{
+      console.log(taskData);
+      // if (taskData && taskData.tasks) {
+        return taskData.tasks.map((task:DatabaseTask) =>{
+          return {
+            title: task.title,
+            description: task.description,
+            date: task.date,
+            priority: task.priority,
+            _id: task._id,
+            status: task.status ? 1 : 0
+          }
+        });
+      // }else{
+        // return [];
+      // }
+    }))
+    .subscribe((transformedTask)=>{
+      // console.log(tasks);
+    this.tasks = transformedTask;
+    console.log(transformedTask);
+    console.log("HERE TARRAY");
+    console.log(this.tasks)
+    // this.postUpDate.next([...this.tasks]);
+  });
+  }
+
+//   getPosts(){
+//     this.http.get<{message: string, posts: any}>('http://localhost:3000/api/posts')
+//     .pipe(map((postData)=>{
+//       return postData.posts.map(post =>{
+//         return {
+//           title: post.title,
+//           content: post.content,
+//           id: post._id
+//         }
+//       })
+//     }))
+//     .subscribe((transformedPost)=>{
+//     this.posts = transformedPost;
+//     this.postUpDate.next([...this.posts]);
+//   });
+
+//  }
+
+
   loginUser(email: string, password: string){
     // const user: User = {id: '', name: ''}
     // const loginUser = {email: email, password: password}
@@ -54,6 +102,10 @@ export class TaskService {
         console.log("Name ", responseData.name);
         console.log("UserID ", responseData.userID);
         console.log("Login success.")
+
+        this.getTasks();
+        console.log(this.tasks);
+
         // Navigate to /tasks route
         this.router.navigate(['/tasks']);
       }else{
