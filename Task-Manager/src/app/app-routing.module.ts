@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 // import { TaskCreateComponent } from './task-create/task-create.component';
 import {TaskCreateComponent} from './task-create/task-create.component';
+import { TaskListComponent } from './task-list/task-list.component';
 
 const routes: Routes = [
   {
@@ -13,7 +14,10 @@ const routes: Routes = [
     path:'register', component: RegisterComponent
   },
   {
-    path:'tasks', component: TaskCreateComponent
+    path:'task-create', component: TaskCreateComponent
+  },
+  {
+    path:'task-list',component: TaskListComponent
   }
 ];
 

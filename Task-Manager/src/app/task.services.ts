@@ -113,7 +113,7 @@ export class TaskService {
         console.log(this.tasks);
 
         // Navigate to /tasks route
-        this.router.navigate(['/tasks']);
+        this.router.navigate(['/task-list']);
       }else{
         console.log("Login failed.");
       }
