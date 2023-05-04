@@ -20,6 +20,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { TaskCreateComponent } from './task-create/task-create.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { RegisterComponent } from './register/register.component';
     MatToolbarModule,
     MatIconModule,
     MatExpansionModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
