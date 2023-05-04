@@ -66,6 +66,7 @@ export class TaskService {
     console.log(transformedTask);
     console.log("HERE TARRAY");
     console.log(this.tasks)
+    this.taskUpDate.next([...this.tasks]);
     // this.postUpDate.next([...this.tasks]);
   });
   }
