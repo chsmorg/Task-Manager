@@ -81,6 +81,7 @@ app.post('/api/users/:userId/tasks', (req, res, next) => {
     const task = new Task({
         title: req.body.title,
         description: req.body.description,
+        priority: req.body.priority,
         date: new Date()
     });
     addNewTask(userId, task, res);

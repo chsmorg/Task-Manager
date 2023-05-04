@@ -29,6 +29,9 @@ input {
   font-size: 16px;
 }
 
+
+
+
 button {
   padding: 10px;
   background-color: #007bff;
@@ -37,8 +40,4 @@ button {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-}
-
-.registerLink{
-  padding-left: 20%;
 }
