@@ -4,5 +4,5 @@ export interface DatabaseTask{
   date: string;
   priority: string;
   _id:string;
-  status:number;
+  status: number;
 }

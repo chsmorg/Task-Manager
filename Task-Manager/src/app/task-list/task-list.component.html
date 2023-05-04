@@ -1,21 +1,35 @@
 <!-- task-list.component.html -->
-<div class="task-list">
-    <div class="filters">
-        <div class="filter-buttons">
-            <button (click)="toggleFilter('completed')">Completed</button>
-            <button (click)="toggleFilter('priority')">Priority</button>
-            <button (click)="toggleFilter('date')">Date</button>
-        </div>  
-    </div>
-  
-    <div class="tasks">
-      <div *ngFor="let task of filteredTasks" class="task">
-        <h3>{{ task.title }}</h3>
-        <p>{{ task.description }}</p>
-        <p>Priority: {{ task.priority }}</p>
-        <p>Date: {{ task.date }}</p>
-        <p>Completed: {{ task.status ? 'Yes' : 'No' }}</p>
+<body>
+    <div class="task-list">
+        <div class="filters">
+            <div class="filter-buttons">
+                <button class="btn" [ngClass]="{'selected-filter': filter.completed}" (click)="toggleFilter('completed')">Completed</button>
+                <button class="btn" [ngClass]="{'selected-filter': filter.priority}" (click)="toggleFilter('priority')">Priority</button>
+                <button class="btn" [ngClass]="{'selected-filter': filter.date}" (click)="toggleFilter('date')">Date</button>
+
+            </div>  
+        </div>
+      
+        <div class="tasks">
+            <div *ngFor="let task of filteredTasks" class="task">
+              <div class="task-card-content">
+                <h3>{{ task.title }}</h3>
+                <p>{{ task.description }}</p>
+                <p>Priority: {{ task.priority }}</p>
+                <p>Date: {{ task.date | date:'medium' }}</p>
+                <p>Completed: {{ task.status ? 'Yes' : 'No' }}</p>
+              </div>
+          
+              <div class="task-card-actions">
+                <div *ngIf = "task.status == 0">
+                    <button class="complete-btn" (click)="markCompleted(task)">Complete</button>
+                </div>
+                <button class="delete-btn" (click)="deleteTask(task)">Delete</button>
+              </div>
+    
+            </div>
+          </div>
       </div>
-    </div>
-  </div>
+</body>
+
   

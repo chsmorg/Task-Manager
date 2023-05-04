@@ -26,6 +26,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskService.getTasks();
     this.taskSub = this.taskService.getTaskUpdateListener().subscribe((tasks: DatabaseTask[])=>{
       this.tasks = tasks;
+      this.applyFilters()
     });
 
   } 
@@ -33,6 +34,17 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnDestroy(){
     this.taskSub.unsubscribe();
   }
+
+  markCompleted(task: DatabaseTask) {
+    task.status = 1
+    console.log(task._id,task.title)
+    this.applyFilters()
+  }
+
+  deleteTask(task: DatabaseTask){
+    console.log(task._id,task.title, task.status)
+  }
+  
 
   toggleFilter(filterName: keyof typeof TaskListComponent.prototype.filter) {
     this.filter[filterName] = !this.filter[filterName];
@@ -49,12 +61,19 @@ export class TaskListComponent implements OnInit, OnDestroy {
       filteredTasks = filteredTasks.filter(task => !task.status);
     }
 
+    
+
     const sortOrderPriority = this.filter.priority ? 1 : -1;
-    filteredTasks.sort((a, b) => Number(b.priority) - Number(a.priority) * sortOrderPriority);
-
     const sortOrderDate = this.filter.date ? 1 : -1;
-    filteredTasks.sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()) * sortOrderDate);
+    
 
+    filteredTasks.sort((a, b) => {
+      const priorityDiff = (Number(b.priority) - Number(a.priority)) * sortOrderPriority;
+      const dateDiff = (new Date(a.date).getTime() - new Date(b.date).getTime()) * sortOrderDate;
+    
+      return priorityDiff !== 0 ? priorityDiff : dateDiff;
+    });
+    
     this.filteredTasks = filteredTasks;
   }
 }
