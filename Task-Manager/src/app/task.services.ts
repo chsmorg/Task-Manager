@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {User} from './user.model'
 import {Task} from './task.model'
 import {map} from 'rxjs/operators'
+import { Router } from '@angular/router';
 
 
 @Injectable({providedIn: 'root'})
@@ -23,7 +24,15 @@ export class TaskService {
 
   isLoggedIn = false;
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private router: Router){
+    // Retrieve UserID from local storage on application startup
+    const userID = localStorage.getItem('userID');
+    console.log("userID from localStorage: ", userID);
+    if (userID) {
+      this.userID = userID;
+      this.isLoggedIn = true;
+    }
+  }
 
   loginUser(email: string, password: string){
     // const user: User = {id: '', name: ''}
@@ -39,9 +48,12 @@ export class TaskService {
         this.userID=responseData.userID;
         this.name=responseData.name;
         this.isLoggedIn = true;
+        localStorage.setItem('userID', this.userID);
         console.log("Name ", responseData.name);
         console.log("UserID ", responseData.userID);
         console.log("Login success.")
+        // Navigate to /tasks route
+        this.router.navigate(['/tasks']);
       }else{
         console.log("Login failed.");
       }
@@ -66,7 +78,9 @@ export class TaskService {
 
   createTask(title: string, description: string, priority: number){
     const task: Task = {title: title, description: description, priority: priority, userID: this.userID}
+    console.log(task);
     this.http.post<{status: string, message:string, taskID:string}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks",task)
+    // this.http.post<{status: string, message:string, taskID:string}>("http://localhost:3000/api/users/"+this.userID+"/tasks",task)
     // /api/users/:userId/tasks
     // this.http.post<{message:string, id:string}>("http://localhost:3000/api/register",user)
     .subscribe((responseData)=>{
