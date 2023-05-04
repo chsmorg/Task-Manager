@@ -10,3 +10,9 @@
   flex: 1;
   padding: 20px;
 }
+app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
