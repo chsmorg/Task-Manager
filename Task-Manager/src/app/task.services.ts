@@ -23,6 +23,8 @@ export class TaskService {
   tasks: DatabaseTask[] = [];
   userID = "";
   name = "";
+  private taskUpDate = new Subject<DatabaseTask[]>()
+
 
   isLoggedIn = false;
 
@@ -34,6 +36,9 @@ export class TaskService {
       this.userID = userID;
       this.isLoggedIn = true;
     }
+  }
+  getTaskUpdateListener(){
+    return this.taskUpDate.asObservable();
   }
 
   getTasks(){
