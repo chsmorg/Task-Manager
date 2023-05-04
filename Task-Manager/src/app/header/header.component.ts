@@ -9,12 +9,34 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   constructor(private router: Router) { }
   goToCreateTask() {
-    this.router.navigate(['/task-create']);
+    // if ('userID' in localStorage) {
+    //   // 'userID' exists in local storage
+    //   this.router.navigate(['/task-create']);
+    // } else {
+    //   // 'userID' does not exist in local storage
+    //   alert("Please log in first.")
+    // }
+    if (localStorage.getItem('userID') !== null) {
+      // 'userID' exists in local storage
+      this.router.navigate(['/task-create']);
+    } else {
+      // 'userID' does not exist in local storage
+      alert("Please log in first.")
+    }
   }
   goToListTasks() {
-    this.router.navigate(['/task-list']);
+    // if(!localStorage)
+    if ('userID' in localStorage) {
+      // 'userID' exists in local storage
+      this.router.navigate(['/task-list']);
+    } else {
+      // 'userID' does not exist in local storage
+      alert("Please log in first.")
+    }
   }
  logout(){
-  
+    // localStorage.setItem('userID', "");
+    localStorage.removeItem('userID');
+    this.router.navigate(['']);
  }
 }
