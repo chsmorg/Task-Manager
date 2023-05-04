@@ -1,1 +1,91 @@
-<p>task-create works!</p>
+<h2>Create New Task</h2>
+
+<form class="task-form" (submit)="onCreate(taskForm)" #taskForm="ngForm">
+  <div class="form-group">
+    <label for="title">Title:</label>
+    <input type="text" id="email" name="title" [(ngModel)]="title">
+  </div>
+  <div class="form-group">
+    <label>Priority:</label>
+    <div>
+      <label>
+        <input type="radio" name="priority" value="1" [(ngModel)]="priority"> Low
+      </label>
+      <label>
+        <input type="radio" name="priority" value="2" [(ngModel)]="priority"> Medium
+      </label>
+      <label>
+        <input type="radio" name="priority" value="3" [(ngModel)]="priority"> High
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" [(ngModel)]="description" rows="10"></textarea>
+  </div>
+  <button type="submit">Create</button>
+</form>
+
+
+
+<!-- <form class="task-form" (submit)="onCreate(taskForm)" #taskForm="ngForm">
+  <div class="form-group">
+    <label for="title">Title:</label>
+    <input type="text" id="email" name="title" [(ngModel)]="title">
+  </div>
+  <div class="form-group">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" [(ngModel)]="description" rows="10"></textarea>
+  </div>
+  <button type="submit">Create</button>
+</form> -->
+
+
+
+
+<!-- <form class="task-form" (submit)="onCreate(taskForm)" #taskForm = "ngForm"> -->
+<!-- <div class="form-group">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" [(ngModel)]="name">
+</div> -->
+<!-- <div class="form-group">
+  <label for="title">Email:</label>
+  <input type="title" id="email" name="title" [(ngModel)]="title">
+</div>
+<div class="form-group">
+  <label for="description">Description:</label>
+  <input type="description" id="description" name="description" [(ngModel)]="description">
+</div>
+<button type="submit">Create</button> -->
+<!-- <a href="register" class="registerLink">Register</a> -->
+<!-- </form> -->
+
+
+
+
+<!-- <p>task-create works!</p>
+<form [formGroup]="createTaskForm" (ngSubmit)="onSubmit()">
+  <label>
+    Title:
+    <input type="text" formControlName="title" required>
+  </label>
+  <label>
+    Description:
+    <textarea formControlName="description" required></textarea>
+  </label>
+  <label>
+    Priority:
+    <div>
+      <label>
+        <input type="radio" value="1" formControlName="priority" required> High
+      </label>
+      <label>
+        <input type="radio" value="2" formControlName="priority" required> Medium
+      </label>
+      <label>
+        <input type="radio" value="3" formControlName="priority" required> Low
+      </label>
+    </div>
+  </label>
+  <button type="submit" [disabled]="createTaskForm.invalid">Create Task</button>
+</form> -->

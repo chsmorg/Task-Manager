@@ -2,12 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+// import { TaskCreateComponent } from './task-create/task-create.component';
+import {TaskCreateComponent} from './task-create/task-create.component';
+
 const routes: Routes = [
   {
     path:'', component: LoginComponent
   },
   {
     path:'register', component: RegisterComponent
+  },
+  {
+    path:'tasks', component: TaskCreateComponent
   }
 ];
 
