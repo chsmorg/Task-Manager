@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const firebase = require('firebase/app');
 const firebaseAuth = require('firebase/auth');
 const { v4: uuidv4 } = require('uuid');
+const cors = require('cors');
 
 const mongoose = require('mongoose');
 
@@ -20,7 +21,7 @@ const firebaseConfig = {
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.FIREBASE_APP_ID
   };
-
+app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
 
@@ -74,8 +75,8 @@ app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
     deleteTask(userId,taskId,res)
 }
 
-'/api/users/'+userid+'/tasks'
 app.post('/api/users/:userId/tasks'),(req,res,next)=>{
+    console.log(req.body,req.params)
     const { userId } = req.params;
     const task = new Task({
       title: req.body.title,
