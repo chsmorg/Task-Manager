@@ -22,6 +22,9 @@ FROM nginx:1.21.0-alpine
 # Copy the built app to Nginx's HTML directory
 COPY --from=build /usr/src/app/dist/task-manager /usr/share/nginx/html
 
+# Copy the Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Expose the port Nginx is running on
 EXPOSE 80
 
