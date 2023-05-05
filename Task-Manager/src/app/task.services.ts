@@ -41,6 +41,44 @@ export class TaskService {
     return this.taskUpDate.asObservable();
   }
 
+  deleteTask(task: DatabaseTask){
+    const taskID = task._id
+    this.http.delete<{message: string, status: Boolean}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks/"+task._id)
+    .subscribe((responseData)=>{
+      if(responseData.status){
+        const updatedTasks = this.tasks.filter(task => task._id !== taskID)
+        this.tasks = updatedTasks
+        this.taskUpDate.next([...this.tasks])
+        console.log(responseData.message)
+      }else{
+        console.log("delete failed.");
+      }
+    });
+  }
+
+  markTask(task: DatabaseTask){
+    const taskID = task._id
+    const updatedData = { status: 1 };
+    this.http.patch<{message: string, status: Boolean}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks/"+task._id,updatedData)
+    .subscribe((responseData)=>{
+      if(responseData.status){
+        const updatedTasks = this.tasks.map((task) => {
+          if (task._id === taskID) {
+            return { ...task, status: 1 };
+          }
+          return task;
+        });
+        
+        this.tasks = updatedTasks
+        this.taskUpDate.next([...this.tasks])
+        console.log(responseData.message)
+      }else{
+        console.log("mark failed.");
+      }
+    });
+
+  }
+
   getTasks(){
     this.http.get<{message: string, tasks: any}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks")
     .pipe(map((taskData)=>{
@@ -63,9 +101,6 @@ export class TaskService {
     .subscribe((transformedTask)=>{
       // console.log(tasks);
     this.tasks = transformedTask;
-    console.log(transformedTask);
-    console.log("HERE TARRAY");
-    console.log(this.tasks)
     this.taskUpDate.next([...this.tasks]);
     // this.postUpDate.next([...this.tasks]);
   });

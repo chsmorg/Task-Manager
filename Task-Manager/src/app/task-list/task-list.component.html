@@ -15,7 +15,7 @@
               <div class="task-card-content">
                 <h3>{{ task.title }}</h3>
                 <p>{{ task.description }}</p>
-                <p>Priority: {{ task.priority }}</p>
+                <p>Priority: {{ getPriorityString(task.priority) }}</p>
                 <p>Date: {{ task.date | date:'medium' }}</p>
                 <p>Completed: {{ task.status ? 'Yes' : 'No' }}</p>
               </div>

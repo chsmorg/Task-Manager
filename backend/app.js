@@ -71,13 +71,18 @@ app.get('/api/users/:userId/tasks', (req,res) => {
     getAllTasks(userId,res)
 });
 
-app.delete('/api/users/:userId/tasks/:taskId'), (req,res) => {
+app.delete('/api/users/:userId/tasks/:taskId', (req,res) => {
     const { userId, taskId } = req.params;
     deleteTask(userId,taskId,res)
-}
+})
+
+app.patch('/api/users/:userId/tasks/:taskId', (req,res) => {
+    const { userId, taskId } = req.params;
+    markTask(userId,taskId,res)
+})
 
 app.post('/api/users/:userId/tasks', (req, res, next) => {
-    console.log(req.body, req.params);
+   // console.log(req.body, req.params);
     const { userId } = req.params;
     const task = new Task({
         title: req.body.title,
@@ -141,7 +146,7 @@ function Register(name, email, password, res) {
           });
           try {
             await newUser.save();
-            console.log('MongoDB user created', newUser._id);
+            console.log('MongoDB user created', newUser._id, "on",new Date());
 
             res.status(201).json({
                 status: true,
@@ -171,9 +176,7 @@ function Register(name, email, password, res) {
     return User.findOne({ _id: userId })
       .then((user) => {
         if (!user) {
-            console.log("no users")
           throw new Error('User not found');
-          
         }
         return user;
       })
@@ -204,7 +207,6 @@ function Register(name, email, password, res) {
   const addNewTask = async (userID, task, res) => {
     findUserById(userID).then(async user => {
         user.tasks.set(task._id, task);
-        const taskID = task._id;
         await user.save().then(() => {
             res.status(200).json({
                 status: true,
@@ -223,10 +225,39 @@ function Register(name, email, password, res) {
   }
   
 
+  const markTask = async (userID, taskID, res) => {
+    await User.findByIdAndUpdate(userID, {
+        $set: {
+          [`tasks.${taskID}.status`]: true,
+        },
+      },{ new: true })
+      .then((updatedUser) => {
+        if (updatedUser) {
+          res.status(200).json({
+            status: true,
+            message: "Task updated successfully",
+          });
+        } else {
+          res.status(404).json({
+            status: false,
+            message: "Task does not exist",
+          });
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        res.status(500).json({
+          status: false,
+          message: errorMessage,
+        });
+      });
+  };
+
+
   const deleteTask = async (userID, taskID, res) => {
     findUserById(userID).then( async user => {
-        if (user.tasks.has(taskId)) {
-            user.tasks.delete(taskId);
+        if (user.tasks.has(taskID)) {
+            user.tasks.delete(taskID);
             await user.save().then(_ => {
                 res.status(200).json({
                     status: true,

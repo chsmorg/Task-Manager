@@ -35,14 +35,29 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskSub.unsubscribe();
   }
 
+  getPriorityString(priority: string): string {
+    const p = Number(priority)
+    switch (p) {
+      case 1:
+        return 'Low';
+      case 2:
+        return 'Medium';
+      case 3:
+        return 'High';
+      default:
+        return 'Unknown';
+    }
+  }
+  
+
   markCompleted(task: DatabaseTask) {
     task.status = 1
-    console.log(task._id,task.title)
-    this.applyFilters()
+    this.taskService.markTask(task)
+  
   }
 
   deleteTask(task: DatabaseTask){
-    console.log(task._id,task.title, task.status)
+    this.taskService.deleteTask(task)
   }
   
 
