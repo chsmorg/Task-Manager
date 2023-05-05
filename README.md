@@ -2,7 +2,9 @@
 task manager created in angular 
 
 # Docker instructions
-1. clone the repo
+### Clone the repo, put the .env file into the backend folder, then run docker.
+
+1. git clone https://github.com/chsmorg/Task-Manager
 2. cd Task-Manager
 3. cd backend
 4. vim .env
