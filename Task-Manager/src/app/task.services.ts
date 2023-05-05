@@ -43,7 +43,7 @@ export class TaskService {
 
   deleteTask(task: DatabaseTask){
     const taskID = task._id
-    this.http.delete<{message: string, status: Boolean}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks/"+task._id)
+    this.http.delete<{message: string, status: Boolean}>("http://localhost:3000/api/users/"+this.userID+"/tasks/"+task._id)
     .subscribe((responseData)=>{
       if(responseData.status){
         const updatedTasks = this.tasks.filter(task => task._id !== taskID)
@@ -59,7 +59,7 @@ export class TaskService {
   markTask(task: DatabaseTask){
     const taskID = task._id
     const updatedData = { status: 1 };
-    this.http.patch<{message: string, status: Boolean}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks/"+task._id,updatedData)
+    this.http.patch<{message: string, status: Boolean}>("http://localhost:3000/api/users/"+this.userID+"/tasks/"+task._id,updatedData)
     .subscribe((responseData)=>{
       if(responseData.status){
         const updatedTasks = this.tasks.map((task) => {
@@ -68,7 +68,7 @@ export class TaskService {
           }
           return task;
         });
-        
+
         this.tasks = updatedTasks
         this.taskUpDate.next([...this.tasks])
         console.log(responseData.message)
@@ -80,7 +80,9 @@ export class TaskService {
   }
 
   getTasks(){
-    this.http.get<{message: string, tasks: any}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks")
+
+    // this.http.get<{message: string, tasks: any}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks")
+    this.http.get<{message: string, tasks: any}>("http://localhost:3000/api/users/"+this.userID+"/tasks")
     .pipe(map((taskData)=>{
       console.log(taskData);
       // if (taskData && taskData.tasks) {
@@ -131,7 +133,7 @@ export class TaskService {
     // console.log(email)
     // console.log(password)
     const user: User = {name: '', email: email, password: password}
-    this.http.post<{status:boolean, message:string, userID:string, name:string}>("http://192.168.170.182:3000/api/login",user)
+    this.http.post<{status:boolean, message:string, userID:string, name:string}>("http://localhost:3000/api/login",user)
     // this.http.post<{message:string, id:string}>("http://192.168.170.182:3000/api/login",user)
     // this.http.post<{message:string, id:string}>("http://localhost:3000/api/login",user)
     .subscribe((responseData)=>{
@@ -163,7 +165,7 @@ export class TaskService {
 
   registerUser(name: string, email: string, password: string){
     const user: User = {name: name, email: email, password: password}
-    this.http.post<{message:string, id:string}>("http://192.168.170.182:3000/api/register",user)
+    this.http.post<{message:string, id:string}>("http://localhost:3000/api/register",user)
     // this.http.post<{message:string, id:string}>("http://localhost:3000/api/register",user)
     .subscribe((responseData)=>{
       // const id = responseData.
@@ -174,7 +176,7 @@ export class TaskService {
   createTask(title: string, description: string, priority: number){
     const task: Task = {title: title, description: description, priority: priority, userID: this.userID}
     console.log(task);
-    this.http.post<{status: string, message:string, task:any}>("http://192.168.170.182:3000/api/users/"+this.userID+"/tasks",task)
+    this.http.post<{status: string, message:string, task:any}>("http://localhost:3000/api/users/"+this.userID+"/tasks",task)
     // this.http.post<{status: string, message:string, taskID:string}>("http://localhost:3000/api/users/"+this.userID+"/tasks",task)
     // /api/users/:userId/tasks
     // this.http.post<{message:string, id:string}>("http://localhost:3000/api/register",user)

@@ -31,7 +31,8 @@
           <label for="password">Password:</label>
           <input type="password" id="password" name="password" [(ngModel)]="password">
         </div>
-        <button class="btn" type="submit">Login</button>  
-        <a href="register" class="registerLink">Register</a>
+        <button class="btn" type="submit">Login</button>
+        <!-- <a href="register" class="registerLink">Register</a> -->
+        <a (click)="goToRegister()">Register</a>
       </form>
     </div>
